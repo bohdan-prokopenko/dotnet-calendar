@@ -7,9 +7,10 @@ public static class ConsoleUtils
     private const string _3Space = @"   ";
 
     public static void PrintTable(
-        int[,] table,
-        Func<int, bool> isGreen,
-        Func<int, bool> isRed
+        DateTime[,] table,
+        Func<DateTime, bool> isGreen,
+        Func<DateTime, bool> isBlue,
+        Func<DateTime, bool> isRed
     )
     {
         int rows = table.GetLength(0);
@@ -19,9 +20,25 @@ public static class ConsoleUtils
         {
             for (int j = 0; j < columns; j++)
             {
-                if (table[i, j] == 0)
+                if (table[i, j] == DateTime.MinValue)
                 {
                     Console.Write(_3Space);
+                    continue;
+                }
+                
+                if (isRed(table[i, j]) && isBlue(table[i, j]))
+                {
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    PrintNumber(table[i, j]);
+                    Console.ResetColor();
+                    continue;
+                }
+                
+                if (isRed(table[i, j]))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    PrintNumber(table[i, j]);
+                    Console.ResetColor();
                     continue;
                 }
 
@@ -33,9 +50,9 @@ public static class ConsoleUtils
                     continue;
                 }
 
-                if (isRed(table[i, j]))
+                if (isBlue(table[i, j]))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     PrintNumber(table[i, j]);
                     Console.ResetColor();
                     continue;
@@ -56,12 +73,12 @@ public static class ConsoleUtils
         Console.WriteLine(string.Join("", shortTitles));
     }
 
-    private static void PrintNumber(int number)
+    private static void PrintNumber(DateTime date)
     {
         Console.Write(
-            number < 10
-                ? _2Space + number
-                : _1Space + number
+            date.Day < 10
+                ? _2Space + date.Day
+                : _1Space + date.Day
         );
     }
 }

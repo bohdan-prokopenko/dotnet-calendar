@@ -5,32 +5,22 @@ public static class DateUtils
     private const int FirstDay = 1;
     private static readonly DateTime CurrentDate = DateTime.Now;
 
-    public static bool IsWeekend(int dayOfTheMonth)
+    public static bool IsWeekend(DateTime date)
     {
-        if (dayOfTheMonth < FirstDay)
-            return false;
-
-        int lastDayOfCurrentMonth = GetLastDayOfMonth(CurrentDate).Day;
-
-        if (dayOfTheMonth > lastDayOfCurrentMonth)
-            return false;
-
-        DateTime date = new(CurrentDate.Year, CurrentDate.Month, dayOfTheMonth);
-        return date.DayOfWeek == DayOfWeek.Saturday | date.DayOfWeek == DayOfWeek.Sunday;
+        return date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
     }
 
-    public static bool IsCurrentDay(int dayOfMonth)
+    public static bool IsCurrentDay(DateTime date)
     {
-        DateTime dateTime = new(CurrentDate.Year, CurrentDate.Month, dayOfMonth);
-        return dateTime.Day == CurrentDate.Day;
+        return date == new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day);
     }
 
-    public static int[,] GetCalendarTable(DateTime dateTime)
+    public static DateTime[,] GetCalendarTable(DateTime dateTime)
     {
         int weeksInMonth = GetWeeksInCurrentMonth(dateTime);
         int daysInWeek = GetDaysInWeek();
         int daysInMonth = GetDaysInCurrentMonth(dateTime);
-        var table = new int[weeksInMonth, daysInWeek];
+        var table = new DateTime[weeksInMonth, daysInWeek];
         int dayOfMonth = GetFirstDayOfMonth(dateTime).Day;
 
         for (int row = 0; row <= weeksInMonth; row++)
@@ -39,7 +29,7 @@ public static class DateUtils
             {
                 DateTime date = new(dateTime.Year, dateTime.Month, dayOfMonth);
                 column = (int) date.DayOfWeek;
-                table[row, column] = dayOfMonth;
+                table[row, column] = date;
                 dayOfMonth++;
             }
         }
@@ -51,7 +41,25 @@ public static class DateUtils
     {
         return GetWeekDays().Select(d => d.ToString()[..2]);
     }
-    
+
+    public static DateTime FromString(string? str)
+    {
+        DateTime date = DateTime.Now;
+        try
+        {
+            date = DateTime.Parse(str);
+        }
+        catch (ArgumentNullException)
+        {
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine($"The string '{str}' was not recognized as a valid DateTime.");
+        }
+
+        return date;
+    }
+
     private static int GetWeeksInCurrentMonth(DateTime dateTime)
     {
         double daysInWeek = GetDaysInWeek();
