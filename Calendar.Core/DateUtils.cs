@@ -15,13 +15,13 @@ public static class DateUtils
         if (dayOfTheMonth > lastDayOfCurrentMonth)
             return false;
 
-        DateTime date = new DateTime(CurrentDate.Year, CurrentDate.Month, dayOfTheMonth);
+        DateTime date = new(CurrentDate.Year, CurrentDate.Month, dayOfTheMonth);
         return date.DayOfWeek == DayOfWeek.Saturday | date.DayOfWeek == DayOfWeek.Sunday;
     }
 
     public static bool IsCurrentDay(int dayOfMonth)
     {
-        DateTime dateTime = new DateTime(CurrentDate.Year, CurrentDate.Month, dayOfMonth);
+        DateTime dateTime = new(CurrentDate.Year, CurrentDate.Month, dayOfMonth);
         return dateTime.Day == CurrentDate.Day;
     }
 
@@ -37,7 +37,7 @@ public static class DateUtils
         {
             for (int column = 0; column < daysInWeek && dayOfMonth <= daysInMonth; column++)
             {
-                DateTime date = new DateTime(dateTime.Year, dateTime.Month, dayOfMonth);
+                DateTime date = new(dateTime.Year, dateTime.Month, dayOfMonth);
                 column = (int) date.DayOfWeek;
                 table[row, column] = dayOfMonth;
                 dayOfMonth++;
@@ -49,7 +49,7 @@ public static class DateUtils
 
     public static IEnumerable<string> GetDaysOfWeekShort()
     {
-        return GetWeekDays().Select(d => d.ToString().Substring(0, 2));
+        return GetWeekDays().Select(d => d.ToString()[..2]);
     }
     
     private static int GetWeeksInCurrentMonth(DateTime dateTime)
